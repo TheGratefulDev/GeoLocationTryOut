@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/question_tv"
+        android:textColor="@color/dark_text"
+        android:padding="@dimen/medium_padding"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/question_main_activity"
+        android:textSize="@dimen/medium_text_size"
+        android:gravity="center" />
+
+    <LinearLayout
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_below="@+id/question_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/driver_btn"
+            android:textColor="@color/dark_text"
+            android:background="@color/taxi_yellow"
+            android:padding="@dimen/medium_padding"
+            android:textSize="@dimen/small_text_size"
+            android:text="@string/driver_button_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </Button>
+
+        <Button
+            android:id="@+id/coffee_drinker_btn"
+            android:textColor="@color/white_w_l_shade"
+            android:background="@color/coffee_brown"
+            android:padding="@dimen/medium_padding"
+            android:textSize="@dimen/small_text_size"
+            android:text="@string/coffee_drinker_button_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </Button>
+
+    </LinearLayout>
+
+</RelativeLayout>

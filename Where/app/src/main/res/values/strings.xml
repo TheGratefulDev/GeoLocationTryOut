@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Where</string>
+    <string name="question_main_activity">Are you a Driver or a Coffee Drinker?</string>
+    <string name="driver_button_text">Driver</string>
+    <string name="coffee_drinker_button_text">Coffee Drinker</string>
+</resources>
