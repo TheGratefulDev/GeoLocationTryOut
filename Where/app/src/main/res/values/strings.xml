@@ -3,4 +3,7 @@
     <string name="question_main_activity">Are you a Driver or a Coffee Drinker?</string>
     <string name="driver_button_text">Driver</string>
     <string name="coffee_drinker_button_text">Coffee Drinker</string>
+    <string name="driver_action_bar_text">Driver</string>
+    <string name="coffee_drinker_action_bar_text">Where is my coffee?</string>
+    <string name="demo">Demo</string>
 </resources>
