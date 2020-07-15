@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
@@ -18,8 +21,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.sql.Driver;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DriverActivity extends AppCompatActivity {
@@ -59,8 +64,52 @@ public class DriverActivity extends AppCompatActivity {
 		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 		sendUpdatedLocationToCloud();
-		//Send Notification To Cloud every 5 seconds.
+		//Send location to Cloud every 5 seconds.
 	}
+
+	// handle button activities
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+
+		if (id == R.id.action_demo) {
+
+			List<GeoPoint> mockGeoPoints = GeoPointUtils.getMockGeoPoint();
+			int i = 1;
+			for (GeoPoint geoPoint : mockGeoPoints) {
+				i++;
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						steeringAnimation();
+						driverTextView.setText(MessageFormat.format("{0},{1}", geoPoint.getLatitude(), geoPoint.getLongitude()));
+
+						db.collection(Constant.COLLECTION_NAME)
+								.document(Constant.DOCUMENT_ID)
+								.update(GeoPointUtils.cloudLatLng(geoPoint));
+					}
+				}, 4000*i);
+
+			}
+
+
+
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	// create an action bar button
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// R.menu.mymenu is a reference to an xml file named mymenu.xml which should be inside your res/menu directory.
+		// If you don't have res/menu, just create a directory named "menu" inside res
+		getMenuInflater().inflate(R.menu.coffee_drinker_menu, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+
 
 	private void sendUpdatedLocationToCloud() {
 		try {

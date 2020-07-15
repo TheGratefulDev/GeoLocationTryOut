@@ -47,7 +47,6 @@ public class CoffeeDrinkerActivity extends AppCompatActivity implements OnMapRea
 		mapView.getMapAsync(this);
 
 
-
 		//use google map fragment
 		//load map
 		//connect to cloud
@@ -55,37 +54,6 @@ public class CoffeeDrinkerActivity extends AppCompatActivity implements OnMapRea
 
 	}
 
-	// create an action bar button
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// R.menu.mymenu is a reference to an xml file named mymenu.xml which should be inside your res/menu directory.
-		// If you don't have res/menu, just create a directory named "menu" inside res
-		getMenuInflater().inflate(R.menu.coffee_drinker_menu, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	// handle button activities
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		int id = item.getItemId();
-
-		if (id == R.id.action_demo) {
-
-			List<GeoPoint> mockGeoPoints = GeoPointUtils.getMockGeoPoint();
-			updateUI(mockGeoPoints.get(0));
-
-			int i = 1;
-			for (GeoPoint geoPoint : mockGeoPoints) {
-				i++;
-				Handler handler = new Handler();
-				handler.postDelayed(() -> db.collection(Constant.COLLECTION_NAME)
-						.document(Constant.DOCUMENT_ID)
-						.update(GeoPointUtils.cloudLatLng(geoPoint)), 4000*i );
-			}
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
 
 
 	@Override
