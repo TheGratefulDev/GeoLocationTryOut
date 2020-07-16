@@ -1,12 +1,7 @@
 package coffee.ka.where;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.animation.LinearInterpolator;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,8 +16,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-
-import java.util.List;
+import com.google.maps.android.SphericalUtil;
 
 public class CoffeeDrinkerActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -85,7 +79,6 @@ public class CoffeeDrinkerActivity extends AppCompatActivity implements OnMapRea
 		try {
 			mGoogleMap = googleMap;
 			mGoogleMap.setMyLocationEnabled(true);
-
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
@@ -110,27 +103,26 @@ public class CoffeeDrinkerActivity extends AppCompatActivity implements OnMapRea
 
 	private void updateUI(GeoPoint geoPoint) {
 		LatLng newLocation = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
-		if (driverMarker != null) {
-			animateCar(newLocation);
-			boolean contains = mGoogleMap.getProjection()
-					.getVisibleRegion()
-					.latLngBounds
-					.contains(newLocation);
-			if (!contains) {
-				mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(newLocation));
-			}
-		} else {
-			mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-					newLocation, 15.5f));
-			driverMarker = mGoogleMap.addMarker(new MarkerOptions().position(newLocation).
-					icon(BitmapDescriptorFactory.fromResource(R.drawable.coffee_marker)));
+		mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom( newLocation, 15.5f));
+
+		if(driverMarker == null ){
+			driverMarker = mGoogleMap.addMarker(new MarkerOptions().position(newLocation). icon(BitmapDescriptorFactory.fromResource(R.drawable.coffee_marker)));
 		}
+
+		animateCar(newLocation);
+		boolean contains = mGoogleMap.getProjection()
+				.getVisibleRegion()
+				.latLngBounds
+				.contains(newLocation);
+		if (!contains) {
+			mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(newLocation));
+		}
+
 	}
 
 	private void animateCar(final LatLng destination) {
 		final LatLng startPosition = driverMarker.getPosition();
 		final LatLng endPosition = new LatLng(destination.latitude, destination.longitude);
-		final LatLngInterpolator latLngInterpolator = new LatLngInterpolator.LinearFixed();
 
 		ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
 		valueAnimator.setDuration(5000); // duration 5 seconds
@@ -139,38 +131,25 @@ public class CoffeeDrinkerActivity extends AppCompatActivity implements OnMapRea
 		valueAnimator.addUpdateListener(animation -> {
 			try {
 				float v = animation.getAnimatedFraction();
-				LatLng newPosition = latLngInterpolator.interpolate(v, startPosition, endPosition);
+				LatLng newPosition =  SphericalUtil.interpolate( startPosition, endPosition, v);
 				driverMarker.setPosition(newPosition);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		});
 
+		/*
+
+
 		valueAnimator.addListener(new AnimatorListenerAdapter() {
 			@Override
 			public void onAnimationEnd(Animator animation) {
 				super.onAnimationEnd(animation);
+
 			}
 		});
+
+		 */
 		valueAnimator.start();
 	}
-
-	private interface LatLngInterpolator {
-		LatLng interpolate(float fraction, LatLng a, LatLng b);
-
-		class LinearFixed implements LatLngInterpolator {
-			@Override
-			public LatLng interpolate(float fraction, LatLng a, LatLng b) {
-				double lat = (b.latitude - a.latitude) * fraction + a.latitude;
-				double lngDelta = b.longitude - a.longitude;
-				if (Math.abs(lngDelta) > 180) {
-					lngDelta -= Math.signum(lngDelta) * 360;
-				}
-				double lng = lngDelta * fraction + a.longitude;
-				return new LatLng(lat, lng);
-			}
-		}
-	}
-
-
 }

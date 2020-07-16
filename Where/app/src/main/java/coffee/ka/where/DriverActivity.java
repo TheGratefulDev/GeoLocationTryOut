@@ -1,7 +1,11 @@
 package coffee.ka.where;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,7 +51,7 @@ public class DriverActivity extends AppCompatActivity {
 
 		db = FirebaseFirestore.getInstance();
 
-		if(getSupportActionBar() != null){
+		if (getSupportActionBar() != null) {
 			getSupportActionBar().setTitle(R.string.driver_action_bar_text);
 		}
 
@@ -89,10 +93,9 @@ public class DriverActivity extends AppCompatActivity {
 								.document(Constant.DOCUMENT_ID)
 								.update(GeoPointUtils.cloudLatLng(geoPoint));
 					}
-				}, 4000*i);
+				}, 4000 * i);
 
 			}
-
 
 
 		}
@@ -110,9 +113,10 @@ public class DriverActivity extends AppCompatActivity {
 	}
 
 
-
+	@SuppressLint("MissingPermission")
 	private void sendUpdatedLocationToCloud() {
 		try {
+
 			fusedLocationProviderClient.requestLocationUpdates(locationRequest, new LocationCallback() {
 				@Override
 				public void onLocationResult(LocationResult locationResult) {
@@ -123,9 +127,9 @@ public class DriverActivity extends AppCompatActivity {
 
 					steeringAnimation();
 
-				 	db.collection(Constant.COLLECTION_NAME)
-						    .document(Constant.DOCUMENT_ID)
-						    .update( GeoPointUtils.cloudLatLng(location) );
+					db.collection(Constant.COLLECTION_NAME)
+							.document(Constant.DOCUMENT_ID)
+							.update(GeoPointUtils.cloudLatLng(location));
 
 				}
 
